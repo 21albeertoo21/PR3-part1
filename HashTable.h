@@ -80,8 +80,8 @@ class HashTable : public Dict<V>{
 				if(table[pos][i].key == key){
 					V aux = (table[pos].remove(i)).value; 
 					n--;
-            				return aux;
-            			}
+            		return aux;
+            	}
 			}
 				
 			throw runtime_error("Key not found\n");
