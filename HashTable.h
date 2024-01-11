@@ -54,7 +54,7 @@ class HashTable : public Dict<V>{
 		
 		void insert(string key, V value)override{
 			int pos = cubeta(key);
-			
+			int aux = capacity();	
 			for(int i = 0; i < table[pos].size(); i++){
 				if(table[pos][i].key == key)
 					throw runtime_error("Key already exists\n");
@@ -62,7 +62,7 @@ class HashTable : public Dict<V>{
 			TableEntry nueva_entrada(key, value);
 			table[pos].append(nueva_entrada);
 			n++;
-			if(n / capacity() > 0.5)
+			if(n / aux > 0.5)
 				rehash();
 		}
 		
@@ -114,15 +114,16 @@ class HashTable : public Dict<V>{
 			max = max * 2;
 			ListLinked<TableEntry<V>> *temp;
 			temp = new ListLinked<TableEntry<V>>[max];
+			TableEntry<V> nodo("", 0);
 			for(int i = 0; i < n; i++){
-				temp->insert(i, table->get(i));
+				for(int j = 0; j < table[i].size(); j++){
+					nodo.key = table[i][j].key;
+                    nodo.value = table[i][j].value;
+                    temp[cubeta(table[i][j].key)].append(nodo);
+				}
 			}
 			delete[] table;
-			table = new ListLinked<TableEntry<V>>[max];
-			for(int i = 0; i < n; i++){
-                table->insert(i, temp->remove(i));
-            }
-			delete[] temp;
+			table = temp;
 		}
 };
 
