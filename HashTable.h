@@ -62,6 +62,8 @@ class HashTable : public Dict<V>{
 			TableEntry nueva_entrada(key, value);
 			table[pos].append(nueva_entrada);
 			n++;
+			if(n / capacity() > 0.5)
+				rehash();
 		}
 		
 		V search(string key)override{
@@ -89,8 +91,8 @@ class HashTable : public Dict<V>{
 		
 		int entries()override{
 			return n;
-		}	
-	
+		}
+
 	private:
 		int n; //elementos almacenados en tabla hash (SE ACTUALIZA)
 		int max; //tamaño tabla hash (NUM TOTAL DE CUBETAS)
@@ -108,7 +110,20 @@ class HashTable : public Dict<V>{
 			return resto;		
 		}
 		
-		
+		void rehash(){
+			max = max * 2;
+			ListLinked<TableEntry<V>> *temp;
+			temp = new ListLinked<TableEntry<V>>[max];
+			for(int i = 0; i < n; i++){
+				temp->insert(i, table->get(i));
+			}
+			delete[] table;
+			table = new ListLinked<TableEntry<V>>[max];
+			for(int i = 0; i < n; i++){
+                table->insert(i, temp->remove(i));
+            }
+			delete[] temp;
+		}
 };
 
 #endif
